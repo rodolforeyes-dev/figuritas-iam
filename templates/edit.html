@@ -23,7 +23,55 @@
   <span id="total-count" class="total-badge">0 figuritas</span>
 </div>
 
+<div class="card" id="matches-card" style="margin-top:16px;">
+  <h3 style="cursor:pointer;" onclick="toggleMatches()">Mis intercambios <span id="matches-arrow">▸</span></h3>
+  <div id="matches-body" style="display:none;">
+    <p class="text-muted" id="matches-status">Buscando coincidencias...</p>
+    <div id="matches-list"></div>
+  </div>
+</div>
+
 <script>
+function toggleMatches() {
+  const body = document.getElementById('matches-body');
+  const arrow = document.getElementById('matches-arrow');
+  const isOpen = body.style.display !== 'none';
+  body.style.display = isOpen ? 'none' : 'block';
+  arrow.textContent = isOpen ? '▸' : '▾';
+  if (!isOpen && !document.getElementById('matches-list').hasChildNodes()) {
+    loadMatches();
+  }
+}
+
+async function loadMatches() {
+  const status = document.getElementById('matches-status');
+  const list = document.getElementById('matches-list');
+  try {
+    const res = await fetch('/api/matches/' + participantId);
+    const data = await res.json();
+    status.style.display = 'none';
+    if (data.length === 0) {
+      list.innerHTML = '<p class="text-muted">Todavía no hay coincidencias. Cuando alguien más tenga las mismas figuritas, aparecerán aquí.</p>';
+      return;
+    }
+    let html = '';
+    data.forEach(m => {
+      html += '<div style="border-bottom:1px solid var(--gris-border);padding:10px 0;">' +
+        '<strong>' + m.p2.responsable + '</strong>' +
+        '<span class="text-muted"> — ' + m.p2.alumno + ' (' + m.p2.salita + ')</span>' +
+        '<div style="margin-top:6px;">' +
+          m.figuritas_en_comun.map(f =>
+            '<span class="match-num">' + f.numero + ' (vos: ' + f.cantidad_p1 + ', ' + m.p2.responsable.split(' ')[0] + ': ' + f.cantidad_p2 + ')</span>'
+          ).join(' ') +
+        '</div>' +
+      '</div>';
+    });
+    list.innerHTML = html;
+  } catch {
+    status.textContent = 'Error al cargar coincidencias';
+  }
+}
+
 const participantId = '{{ participant.id }}';
 const grid = document.getElementById('sticker-grid');
 const cells = grid.querySelectorAll('.sticker-cell');

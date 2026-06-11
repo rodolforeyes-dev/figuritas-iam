@@ -10,6 +10,9 @@
     Registrar mis figuritas
   </a>
   <div class="home-recovery">
+    <a id="btn-mis-figuritas" href="#" class="btn btn-secondary btn-large" style="display:none;margin-bottom:12px;">
+      Mis figuritas
+    </a>
     <p>¿Ya te registraste?</p>
     <button class="btn btn-outline" onclick="buscarMiRegistro()">Buscar mi registro</button>
   </div>
@@ -61,7 +64,9 @@ const storedId = localStorage.getItem('participant_id');
 if (storedId) {
   fetch('/api/participant/' + storedId).then(r => {
     if (r.ok) {
-      window.location.href = '/edit/' + storedId;
+      const btn = document.getElementById('btn-mis-figuritas');
+      btn.href = '/edit/' + storedId;
+      btn.style.display = 'block';
     }
   }).catch(() => {});
 }
