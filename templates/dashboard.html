@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Panel general</h2>
+<p class="text-muted">Estadísticas del intercambio de figuritas IAM</p>
+
+<div id="dashboard-content">
+  <p class="text-muted">Cargando...</p>
+</div>
+
+<script>
+async function loadDashboard() {
+  const res = await fetch('/api/dashboard');
+  const d = await res.json();
+  const c = document.getElementById('dashboard-content');
+
+  let html = '<div class="stats-grid">' +
+    '<div class="stat-box"><span class="stat-number">' + d.total_participantes + '</span><span class="stat-label">Participantes</span></div>' +
+    '<div class="stat-box"><span class="stat-number">' + d.total_figuritas + '</span><span class="stat-label">Figuritas registradas</span></div>' +
+    '<div class="stat-box"><span class="stat-number">' + d.figuritas_con_datos + '</span><span class="stat-label">Figuritas con datos</span></div>' +
+    '<div class="stat-box"><span class="stat-number">' + d.figuritas_sin_datos + '</span><span class="stat-label">Figuritas sin registro</span></div>' +
+    '</div>';
+
+  html += '<div class="card"><h3>Participantes por salita</h3><ul class="dash-list">';
+  Object.entries(d.por_salita).forEach(([s, n]) => {
+    html += '<li><span class="dash-label">' + s + '</span><span class="dash-value">' + n + '</span></li>';
+  });
+  html += '</ul></div>';
+
+  html += '<div class="card"><h3>Figuritas más repetidas</h3><ol class="dash-list">';
+  d.mas_repetidas.forEach(f => {
+    html += '<li><span class="dash-label">Figurita ' + f.numero + '</span><span class="dash-value">' + f.total + ' uds. (' + f.owners + ' familias)</span></li>';
+  });
+  html += '</ol></div>';
+
+  html += '<div class="card"><h3>Figuritas menos registradas</h3><ol class="dash-list">';
+  d.menos_registradas.forEach(f => {
+    html += '<li><span class="dash-label">Figurita ' + f.numero + '</span><span class="dash-value">' + f.total + ' uds. (' + f.owners + ' familias)</span></li>';
+  });
+  html += '</ol></div>';
+
+  if (d.sin_registros.length > 0) {
+    html += '<div class="card"><h3>Figuritas sin registros</h3><p class="text-muted">' + d.sin_registros.join(', ') + '</p></div>';
+  }
+
+  html += '<div class="card"><h3>Últimas actualizaciones</h3><ul class="dash-list">';
+  d.ultimas_actualizaciones.forEach(u => {
+    html += '<li><span class="dash-label">' + u.responsable + ' — ' + u.alumno + '</span><span class="dash-value">' + u.fecha + '</span></li>';
+  });
+  html += '</ul></div>';
+
+  c.innerHTML = html;
+}
+
+loadDashboard();
+</script>
+{% endblock %}

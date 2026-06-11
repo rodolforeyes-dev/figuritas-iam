@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="search-hero">
+  <h2>Busco esta figurita</h2>
+  <div class="search-box">
+    <input type="number" id="search-num" min="1" max="204" placeholder="N° de figurita (1-204)" class="input input-lg">
+    <button class="btn btn-primary btn-lg" onclick="doSearch()">Buscar</button>
+  </div>
+</div>
+
+<div id="search-results"></div>
+
+<script>
+async function doSearch() {
+  const num = document.getElementById('search-num').value.trim();
+  if (!num || num < 1 || num > 204) return;
+  const container = document.getElementById('search-results');
+  container.innerHTML = '<p class="text-muted">Buscando...</p>';
+
+  const res = await fetch('/api/search/' + num);
+  const data = await res.json();
+
+  if (data.length === 0) {
+    container.innerHTML = '<div class="card"><p class="text-muted">Nadie registró la figurita ' + num + ' como repetida todavía.</p></div>';
+    return;
+  }
+
+  let html = '<h3>Figurita ' + num + ' disponible en:</h3>';
+  data.forEach(p => {
+    html += '<div class="card result-card">' +
+      '<div class="result-name">' + p.responsable + '</div>' +
+      '<div class="result-detail">Alumno: ' + p.alumno + '</div>' +
+      '<div class="result-detail">Sala: ' + p.salita + '</div>' +
+      '<div class="result-detail">Cantidad disponible: ' + p.cantidad + '</div>' +
+      '<div class="result-detail">Teléfono: ' + p.telefono + '</div>' +
+      '<a href="' + p.wa_link + '" target="_blank" class="btn btn-wa">📱 Contactar</a>' +
+      '</div>';
+  });
+  container.innerHTML = html;
+}
+
+document.getElementById('search-num').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') doSearch();
+});
+</script>
+{% endblock %}

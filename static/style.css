@@ -1,0 +1,617 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --celeste: #74ACDF;
+  --celeste-dark: #4F8BC0;
+  --celeste-light: #D6E8F7;
+  --verde: #2E7D32;
+  --verde-light: #4CAF50;
+  --verde-dark: #1B5E20;
+  --blanco: #FFFFFF;
+  --gris-bg: #F5F5F5;
+  --gris-border: #E0E0E0;
+  --gris-text: #757575;
+  --texto: #212121;
+  --shadow: 0 2px 8px rgba(0,0,0,0.1);
+  --radius: 12px;
+  --radius-sm: 8px;
+}
+
+html {
+  font-size: 16px;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--gris-bg);
+  color: var(--texto);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  background: var(--celeste);
+  color: var(--blanco);
+  box-shadow: var(--shadow);
+}
+
+.header-content {
+  padding: 16px 20px 8px;
+  text-align: center;
+}
+
+.header-link {
+  color: var(--blanco);
+  text-decoration: none;
+}
+
+.header-content h1 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.header-sub {
+  font-size: 0.8rem;
+  opacity: 0.9;
+  margin-top: 2px;
+}
+
+.header-nav {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  padding: 0 12px 10px;
+}
+
+.nav-link {
+  color: var(--blanco);
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 20px;
+  opacity: 0.85;
+  transition: all 0.2s;
+}
+
+.nav-link:hover {
+  opacity: 1;
+  background: rgba(255,255,255,0.15);
+}
+
+main {
+  flex: 1;
+  max-width: 800px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+footer {
+  background: var(--celeste);
+  color: var(--blanco);
+  text-align: center;
+  padding: 12px;
+  font-size: 0.75rem;
+  opacity: 0.85;
+}
+
+/* ─── Cards ──────────────────────────────── */
+
+.card {
+  background: var(--blanco);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow);
+  border-left: 4px solid var(--celeste);
+}
+
+.card h2, .card h3 {
+  margin-bottom: 12px;
+  color: var(--celeste);
+}
+
+/* ─── Buttons ─────────────────────────────── */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border: 2px solid transparent;
+  border-radius: var(--radius);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn-primary {
+  background: var(--celeste);
+  color: var(--blanco);
+  border-color: var(--celeste);
+}
+
+.btn-primary:hover {
+  background: var(--celeste-dark);
+  border-color: var(--celeste-dark);
+}
+
+.btn-secondary {
+  background: var(--verde);
+  color: var(--blanco);
+  border-color: var(--verde);
+}
+
+.btn-secondary:hover {
+  background: var(--verde-dark);
+  border-color: var(--verde-dark);
+}
+
+.btn-outline {
+  background: var(--blanco);
+  color: var(--celeste);
+  border-color: var(--celeste);
+}
+
+.btn-outline:hover {
+  background: var(--celeste);
+  color: var(--blanco);
+}
+
+.btn-wa {
+  background: #25D366;
+  color: var(--blanco);
+  border-color: #25D366;
+  width: 100%;
+  margin-top: 10px;
+  font-size: 1.1rem;
+}
+
+.btn-wa:hover {
+  background: #1DA851;
+}
+
+.btn-large {
+  padding: 20px 32px;
+  font-size: 1.2rem;
+  width: 100%;
+}
+
+.btn-lg {
+  padding: 16px 28px;
+  font-size: 1.1rem;
+}
+
+.btn-sm {
+  padding: 8px 16px;
+  font-size: 0.85rem;
+}
+
+.btn-full {
+  width: 100%;
+  margin-top: 8px;
+}
+
+.btn-icon {
+  font-size: 1.5rem;
+}
+
+/* ─── Inputs ──────────────────────────────── */
+
+.input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 2px solid var(--gris-border);
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
+  background: var(--blanco);
+  transition: border-color 0.2s;
+  margin-bottom: 12px;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--celeste);
+}
+
+.input-lg {
+  padding: 16px;
+  font-size: 1.2rem;
+  text-align: center;
+}
+
+select.input {
+  appearance: auto;
+}
+
+label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 4px;
+  font-size: 0.9rem;
+  color: var(--texto);
+}
+
+/* ─── Home page ───────────────────────────── */
+
+.home-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.home-recovery {
+  text-align: center;
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--gris-border);
+}
+
+.home-recovery p {
+  margin-bottom: 8px;
+  color: var(--gris-text);
+}
+
+/* ─── Modal ───────────────────────────────── */
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 16px;
+}
+
+.modal-content {
+  background: var(--blanco);
+  border-radius: var(--radius);
+  padding: 24px;
+  max-width: 400px;
+  width: 100%;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+}
+
+.modal-content h3 {
+  color: var(--celeste);
+  margin-bottom: 8px;
+}
+
+.modal-content .btn {
+  margin-top: 8px;
+  width: 100%;
+}
+
+.lookup-item {
+  display: block;
+  margin-top: 8px;
+  text-align: left;
+  font-weight: 500;
+}
+
+/* ─── Sticker Grid ────────────────────────── */
+
+.edit-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.edit-header h2 {
+  color: var(--celeste);
+  font-size: 1.2rem;
+}
+
+.sticker-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.sticker-cell {
+  background: var(--blanco);
+  border: 2px solid var(--gris-border);
+  border-radius: var(--radius-sm);
+  padding: 8px 4px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.15s;
+  position: relative;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+.sticker-cell:active {
+  transform: scale(0.93);
+}
+
+.sticker-cell.has-sticker {
+  background: #E8F5E9;
+  border-color: var(--verde-light);
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.3);
+}
+
+.sticker-num {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--texto);
+}
+
+.sticker-qty {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--gris-text);
+  margin-top: 2px;
+}
+
+.sticker-cell.has-sticker .sticker-qty {
+  color: var(--verde);
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.sticker-dec {
+  display: none;
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid var(--celeste);
+  background: var(--blanco);
+  color: var(--celeste);
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.sticker-cell.has-sticker .sticker-dec {
+  display: flex;
+}
+
+.edit-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 16px;
+}
+
+.total-badge {
+  background: var(--verde);
+  color: var(--blanco);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+/* ─── Search ──────────────────────────────── */
+
+.search-hero {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.search-hero h2 {
+  color: var(--celeste);
+  font-size: 1.5rem;
+  margin-bottom: 16px;
+}
+
+.search-box {
+  display: flex;
+  gap: 8px;
+}
+
+.search-box .input {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+/* ─── Results ─────────────────────────────── */
+
+.result-card {
+  border-left-color: var(--verde);
+}
+
+.result-name {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--celeste);
+  margin-bottom: 4px;
+}
+
+.result-detail {
+  font-size: 0.9rem;
+  color: var(--texto);
+  margin-bottom: 2px;
+}
+
+/* ─── Matches ─────────────────────────────── */
+
+.match-card {
+  border-left-color: var(--verde);
+}
+
+.match-pair {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.match-person {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.match-vs {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--celeste);
+}
+
+.match-stickers p {
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: var(--verde-dark);
+}
+
+.match-nums {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.match-num {
+  background: #E8F5E9;
+  color: var(--verde-dark);
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+/* ─── Stats / Dashboard ───────────────────── */
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.stat-box {
+  background: var(--blanco);
+  border-radius: var(--radius);
+  padding: 16px;
+  text-align: center;
+  box-shadow: var(--shadow);
+  border-top: 4px solid var(--celeste);
+}
+
+.stat-number {
+  display: block;
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--celeste);
+}
+
+.stat-label {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--gris-text);
+  margin-top: 4px;
+}
+
+.stats-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.stats-row .stat-box {
+  flex: 1;
+}
+
+.dash-list {
+  list-style: none;
+}
+
+.dash-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--gris-border);
+}
+
+.dash-list li:last-child {
+  border-bottom: none;
+}
+
+.dash-label {
+  font-weight: 500;
+}
+
+.dash-value {
+  color: var(--gris-text);
+  font-size: 0.9rem;
+}
+
+/* ─── Utils ───────────────────────────────── */
+
+.text-muted {
+  color: var(--gris-text);
+  font-size: 0.9rem;
+}
+
+.error-msg {
+  color: var(--celeste);
+  font-size: 0.9rem;
+  margin-top: 8px;
+  text-align: center;
+}
+
+/* ─── Responsive ──────────────────────────── */
+
+@media (min-width: 600px) {
+  .sticker-grid {
+    grid-template-columns: repeat(10, 1fr);
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .home-actions {
+    flex-direction: row;
+  }
+
+  .search-box {
+    max-width: 500px;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 380px) {
+  .sticker-grid {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 5px;
+  }
+
+  .sticker-cell {
+    padding: 6px 2px;
+  }
+
+  .sticker-num {
+    font-size: 0.85rem;
+  }
+}

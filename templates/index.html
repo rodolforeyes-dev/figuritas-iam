@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="home-actions">
+  <a href="/search" class="btn btn-primary btn-large">
+    <span class="btn-icon">🔍</span>
+    Buscar figurita
+  </a>
+  <a href="/register" class="btn btn-secondary btn-large">
+    <span class="btn-icon">📋</span>
+    Registrar mis figuritas
+  </a>
+  <div class="home-recovery">
+    <p>¿Ya te registraste?</p>
+    <button class="btn btn-outline" onclick="buscarMiRegistro()">Buscar mi registro</button>
+  </div>
+</div>
+
+<div id="lookup-modal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <h3>Buscar mi registro</h3>
+    <p>Ingresá tu nombre o el de tu hijo/a para recuperar tus figuritas.</p>
+    <input type="text" id="lookup-query" placeholder="Ej: Juan Pérez" class="input">
+    <button class="btn btn-primary" onclick="lookupParticipant()">Buscar</button>
+    <button class="btn btn-outline" onclick="cerrarModal()">Cancelar</button>
+    <div id="lookup-results"></div>
+  </div>
+</div>
+
+<script>
+function buscarMiRegistro() {
+  document.getElementById('lookup-modal').style.display = 'flex';
+}
+
+function cerrarModal() {
+  document.getElementById('lookup-modal').style.display = 'none';
+}
+
+async function lookupParticipant() {
+  const query = document.getElementById('lookup-query').value.trim();
+  if (!query) return;
+  const res = await fetch('/api/participants/lookup', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+    body: 'query=' + encodeURIComponent(query)
+  });
+  const data = await res.json();
+  const container = document.getElementById('lookup-results');
+  if (data.length === 0) {
+    container.innerHTML = '<p class="text-muted">No se encontraron registros. <a href="/register">Registrate aquí</a></p>';
+    return;
+  }
+  container.innerHTML = '<h4>Seleccioná tu registro:</h4>' +
+    data.map(p => `<a href="/edit/${p.id}" class="btn btn-outline lookup-item">${p.responsable} — ${p.alumno} (${p.salita})</a>`).join('');
+}
+
+document.getElementById('lookup-query').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') lookupParticipant();
+});
+
+const storedId = localStorage.getItem('participant_id');
+if (storedId) {
+  fetch('/api/participant/' + storedId).then(r => {
+    if (r.ok) {
+      window.location.href = '/edit/' + storedId;
+    }
+  }).catch(() => {});
+}
+</script>
+{% endblock %}

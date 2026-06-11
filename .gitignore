@@ -1,0 +1,6 @@
+venv/
+__pycache__/
+*.pyc
+data/participants.json
+*.tmp
+.DS_Store

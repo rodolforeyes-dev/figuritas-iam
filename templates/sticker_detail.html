@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="sticker-detail-header">
+  <h2>Figurita {{ data.numero }}</h2>
+</div>
+
+<div class="stats-row">
+  <div class="stat-box">
+    <span class="stat-number">{{ data.total_unidades }}</span>
+    <span class="stat-label">Unidades disponibles</span>
+  </div>
+  <div class="stat-box">
+    <span class="stat-number">{{ data.total_participantes }}</span>
+    <span class="stat-label">Familias que la tienen</span>
+  </div>
+</div>
+
+{% if data.owners %}
+<div class="owners-list">
+  {% for owner in data.owners %}
+  <div class="card result-card">
+    <div class="result-name">{{ owner.responsable }}</div>
+    <div class="result-detail">Alumno: {{ owner.alumno }}</div>
+    <div class="result-detail">Sala: {{ owner.salita }}</div>
+    <div class="result-detail">Cantidad: {{ owner.cantidad }}</div>
+    <div class="result-detail">Teléfono: {{ owner.telefono }}</div>
+    <a href="{{ owner.wa_link }}" target="_blank" class="btn btn-wa">📱 Contactar</a>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="card">
+  <p class="text-muted">Nadie registró esta figurita como repetida todavía.</p>
+</div>
+{% endif %}
+
+<a href="/search" class="btn btn-outline btn-full">Buscar otra figurita</a>
+{% endblock %}

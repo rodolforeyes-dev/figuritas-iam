@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h2>Registrarme</h2>
+  <form id="register-form">
+    <label for="responsable">Responsable (mamá/papá/tutor)</label>
+    <input type="text" id="responsable" name="responsable" placeholder="Ej: Juan Pérez" required class="input">
+
+    <label for="telefono">Teléfono celular</label>
+    <input type="tel" id="telefono" name="telefono" placeholder="Ej: 2226-123456" required class="input">
+
+    <label for="alumno">Nombre del alumno</label>
+    <input type="text" id="alumno" name="alumno" placeholder="Ej: Tomás Pérez" required class="input">
+
+    <label for="salita">Salita</label>
+    <select id="salita" name="salita" required class="input">
+      <option value="">Seleccionar...</option>
+      {% for salita in salitas %}
+      <option value="{{ salita }}">{{ salita }}</option>
+      {% endfor %}
+    </select>
+
+    <button type="submit" class="btn btn-primary btn-full">Registrarme</button>
+  </form>
+  <div id="register-error" class="error-msg"></div>
+</div>
+
+<script>
+document.getElementById('register-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const form = this;
+  const btn = form.querySelector('button[type="submit"]');
+  btn.disabled = true;
+  btn.textContent = 'Registrando...';
+
+  const data = new URLSearchParams(new FormData(form));
+  const res = await fetch('/api/participants', { method: 'POST', body: data });
+  const result = await res.json();
+
+  if (!res.ok) {
+    document.getElementById('register-error').textContent = result.detail || 'Error al registrar';
+    btn.disabled = false;
+    btn.textContent = 'Registrarme';
+    return;
+  }
+
+  localStorage.setItem('participant_id', result.id);
+  window.location.href = '/edit/' + result.id;
+});
+</script>
+{% endblock %}

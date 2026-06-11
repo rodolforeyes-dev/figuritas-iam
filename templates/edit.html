@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="edit-header">
+  <div>
+    <h2>{{ participant.responsable }}</h2>
+    <p class="text-muted">{{ participant.alumno }} — {{ participant.salita }}</p>
+  </div>
+  <a href="/" class="btn btn-outline btn-sm">Salir</a>
+</div>
+
+<div id="sticker-grid" class="sticker-grid">
+  {% for i in range(1, 205) %}
+  <div class="sticker-cell" data-num="{{ i }}" data-qty="0" onclick="incSticker(this)">
+    <span class="sticker-num">{{ i }}</span>
+    <span class="sticker-qty">0</span>
+    <button class="sticker-dec" onclick="event.stopPropagation(); decSticker(this.parentElement)">−</button>
+  </div>
+  {% endfor %}
+</div>
+
+<div class="edit-footer">
+  <p class="text-muted" id="save-status">Toque una figurita para marcarla como repetida</p>
+  <span id="total-count" class="total-badge">0 figuritas</span>
+</div>
+
+<script>
+const participantId = '{{ participant.id }}';
+const grid = document.getElementById('sticker-grid');
+const cells = grid.querySelectorAll('.sticker-cell');
+let figuritas = {{ participant.figuritas_repetidas | tojson | safe }};
+let saveTimeout = null;
+
+function render() {
+  cells.forEach(cell => {
+    const num = cell.dataset.num;
+    const qty = figuritas[num] || 0;
+    cell.dataset.qty = qty;
+    cell.querySelector('.sticker-qty').textContent = qty;
+    cell.classList.toggle('has-sticker', qty > 0);
+  });
+  document.getElementById('total-count').textContent =
+    Object.values(figuritas).filter(v => v > 0).length + ' figuritas';
+}
+
+function incSticker(cell) {
+  const num = cell.dataset.num.toString();
+  figuritas[num] = (figuritas[num] || 0) + 1;
+  render();
+  scheduleSave();
+}
+
+function decSticker(cell) {
+  const num = cell.dataset.num.toString();
+  if ((figuritas[num] || 0) > 0) {
+    figuritas[num] -= 1;
+    if (figuritas[num] <= 0) delete figuritas[num];
+    render();
+    scheduleSave();
+  }
+}
+
+function scheduleSave() {
+  document.getElementById('save-status').textContent = 'Guardando...';
+  clearTimeout(saveTimeout);
+  saveTimeout = setTimeout(saveStickers, 500);
+}
+
+async function saveStickers() {
+  try {
+    const res = await fetch('/api/participants/' + participantId + '/stickers', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ figuritas_repetidas: figuritas })
+    });
+    if (res.ok) {
+      document.getElementById('save-status').textContent = 'Guardado automáticamente ✓';
+    } else {
+      document.getElementById('save-status').textContent = 'Error al guardar';
+    }
+  } catch {
+    document.getElementById('save-status').textContent = 'Error de conexión';
+  }
+}
+
+render();
+</script>
+{% endblock %}

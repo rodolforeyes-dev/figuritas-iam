@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Posibles intercambios</h2>
+<p class="text-muted">Familias que tienen figuritas repetidas en común y podrían intercambiar.</p>
+
+<div id="matches-container">
+  <p class="text-muted">Cargando...</p>
+</div>
+
+<script>
+async function loadMatches() {
+  const res = await fetch('/api/matches');
+  const data = await res.json();
+  const container = document.getElementById('matches-container');
+
+  if (data.length === 0) {
+    container.innerHTML = '<div class="card"><p class="text-muted">Todavía no hay coincidencias. Cuando más familias registren figuritas, aparecerán aquí.</p></div>';
+    return;
+  }
+
+  let html = '';
+  data.forEach(m => {
+    html += '<div class="card match-card">' +
+      '<div class="match-pair">' +
+        '<div class="match-person">' +
+          '<strong>' + m.p1.responsable + '</strong>' +
+          '<span class="text-muted">' + m.p1.alumno + ' — ' + m.p1.salita + '</span>' +
+        '</div>' +
+        '<div class="match-vs">↔</div>' +
+        '<div class="match-person">' +
+          '<strong>' + m.p2.responsable + '</strong>' +
+          '<span class="text-muted">' + m.p2.alumno + ' — ' + m.p2.salita + '</span>' +
+        '</div>' +
+      '</div>' +
+      '<div class="match-stickers">' +
+        '<p>Figuritas en común:</p>' +
+        '<div class="match-nums">' +
+          m.figuritas_en_comun.map(f =>
+            '<span class="match-num">' + f.numero + ' (' + f.cantidad_p1 + ' y ' + f.cantidad_p2 + ' uds.)</span>'
+          ).join('') +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  });
+  container.innerHTML = html;
+}
+
+loadMatches();
+</script>
+{% endblock %}
