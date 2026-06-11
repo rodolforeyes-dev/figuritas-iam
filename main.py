@@ -16,6 +16,7 @@ from services.persistence import (
 from services.search import search_sticker, search_sticker_detail
 from services.matches import find_matches, find_matches_for_participant
 from services.stats import get_stats
+from services.metrics import get_metrics
 
 app = FastAPI(title="Intercambio figuritas IAM")
 
@@ -148,6 +149,10 @@ async def api_matches():
 async def api_matches_for_participant(pid: str):
     return find_matches_for_participant(pid)
 
+
+@app.get("/api/metrics")
+async def api_metrics():
+    return get_metrics()
 
 @app.get("/api/dashboard")
 async def api_dashboard():
