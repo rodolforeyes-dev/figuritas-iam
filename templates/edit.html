@@ -8,6 +8,11 @@
   <a href="/" class="btn btn-outline btn-sm">Salir</a>
 </div>
 
+<div class="mode-toggle">
+  <button id="btn-mode-tengo" class="mode-btn mode-active" onclick="setMode('tengo')">Tengo</button>
+  <button id="btn-mode-quiero" class="mode-btn" onclick="setMode('quiero')">Quiero</button>
+</div>
+
 <div id="sticker-grid" class="sticker-grid">
   {% for i in range(1, 205) %}
   <div class="sticker-cell" data-num="{{ i }}" data-qty="0" onclick="incSticker(this)">
@@ -26,82 +31,73 @@
 <div class="card" id="matches-card" style="margin-top:16px;">
   <h3 style="cursor:pointer;" onclick="toggleMatches()">Mis intercambios <span id="matches-arrow">▸</span></h3>
   <div id="matches-body" style="display:none;">
-    <p class="text-muted" id="matches-status">Buscando coincidencias...</p>
-    <div id="matches-list"></div>
+    <p class="text-muted" id="matches-status">Cargando...</p>
+    <div id="matches-tienen"></div>
+    <div id="matches-buscan"></div>
   </div>
 </div>
 
 <script>
-function toggleMatches() {
-  const body = document.getElementById('matches-body');
-  const arrow = document.getElementById('matches-arrow');
-  const isOpen = body.style.display !== 'none';
-  body.style.display = isOpen ? 'none' : 'block';
-  arrow.textContent = isOpen ? '▸' : '▾';
-  if (!isOpen && !document.getElementById('matches-list').hasChildNodes()) {
-    loadMatches();
-  }
-}
-
-async function loadMatches() {
-  const status = document.getElementById('matches-status');
-  const list = document.getElementById('matches-list');
-  try {
-    const res = await fetch('/api/matches/' + participantId);
-    const data = await res.json();
-    status.style.display = 'none';
-    if (data.length === 0) {
-      list.innerHTML = '<p class="text-muted">Todavía no hay coincidencias. Cuando alguien más tenga las mismas figuritas, aparecerán aquí.</p>';
-      return;
-    }
-    let html = '';
-    data.forEach(m => {
-      html += '<div style="border-bottom:1px solid var(--gris-border);padding:10px 0;">' +
-        '<strong>' + m.p2.responsable + '</strong>' +
-        '<span class="text-muted"> — ' + m.p2.alumno + ' (' + m.p2.salita + ')</span>' +
-        '<div style="margin-top:6px;">' +
-          m.figuritas_en_comun.map(f =>
-            '<span class="match-num">' + f.numero + ' (vos: ' + f.cantidad_p1 + ', ' + m.p2.responsable.split(' ')[0] + ': ' + f.cantidad_p2 + ')</span>'
-          ).join(' ') +
-        '</div>' +
-      '</div>';
-    });
-    list.innerHTML = html;
-  } catch {
-    status.textContent = 'Error al cargar coincidencias';
-  }
-}
-
 const participantId = '{{ participant.id }}';
 const grid = document.getElementById('sticker-grid');
 const cells = grid.querySelectorAll('.sticker-cell');
-let figuritas = {{ participant.figuritas_repetidas | tojson | safe }};
 let saveTimeout = null;
 
+let figuritasTengo = {{ participant.figuritas_repetidas | tojson | safe }};
+let figuritasQuiero = {{ participant.figuritas_que_quiero | tojson | safe }};
+let currentMode = 'tengo';
+
+function getCurrentData() {
+  return currentMode === 'tengo' ? figuritasTengo : figuritasQuiero;
+}
+
+function getSaveEndpoint() {
+  return currentMode === 'tengo'
+    ? '/api/participants/' + participantId + '/stickers'
+    : '/api/participants/' + participantId + '/wanted';
+}
+
 function render() {
+  const data = getCurrentData();
   cells.forEach(cell => {
     const num = cell.dataset.num;
-    const qty = figuritas[num] || 0;
+    const qty = data[num] || 0;
     cell.dataset.qty = qty;
     cell.querySelector('.sticker-qty').textContent = qty;
     cell.classList.toggle('has-sticker', qty > 0);
+    cell.classList.toggle('wants-sticker', false);
+    if (currentMode === 'quiero') {
+      cell.classList.remove('has-sticker');
+      cell.classList.toggle('wants-sticker', qty > 0);
+    }
   });
-  document.getElementById('total-count').textContent =
-    Object.values(figuritas).filter(v => v > 0).length + ' figuritas';
+  const total = Object.values(getCurrentData()).filter(v => v > 0).length;
+  document.getElementById('total-count').textContent = total + ' figuritas';
+}
+
+function setMode(mode) {
+  currentMode = mode;
+  document.getElementById('btn-mode-tengo').classList.toggle('mode-active', mode === 'tengo');
+  document.getElementById('btn-mode-quiero').classList.toggle('mode-active', mode === 'quiero');
+  const label = mode === 'tengo' ? 'repetida' : 'que quiero';
+  document.getElementById('save-status').textContent = 'Toque una figurita para marcarla como ' + label;
+  render();
 }
 
 function incSticker(cell) {
   const num = cell.dataset.num.toString();
-  figuritas[num] = (figuritas[num] || 0) + 1;
+  const data = getCurrentData();
+  data[num] = (data[num] || 0) + 1;
   render();
   scheduleSave();
 }
 
 function decSticker(cell) {
   const num = cell.dataset.num.toString();
-  if ((figuritas[num] || 0) > 0) {
-    figuritas[num] -= 1;
-    if (figuritas[num] <= 0) delete figuritas[num];
+  const data = getCurrentData();
+  if ((data[num] || 0) > 0) {
+    data[num] -= 1;
+    if (data[num] <= 0) delete data[num];
     render();
     scheduleSave();
   }
@@ -115,10 +111,10 @@ function scheduleSave() {
 
 async function saveStickers() {
   try {
-    const res = await fetch('/api/participants/' + participantId + '/stickers', {
+    const res = await fetch(getSaveEndpoint(), {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({ figuritas_repetidas: figuritas })
+      body: JSON.stringify({ figuritas_repetidas: getCurrentData() })
     });
     if (res.ok) {
       document.getElementById('save-status').textContent = 'Guardado automáticamente ✓';
@@ -127,6 +123,74 @@ async function saveStickers() {
     }
   } catch {
     document.getElementById('save-status').textContent = 'Error de conexión';
+  }
+}
+
+// ─── Matches ─────────────────────────────────
+
+function toggleMatches() {
+  const body = document.getElementById('matches-body');
+  const arrow = document.getElementById('matches-arrow');
+  const isOpen = body.style.display !== 'none';
+  body.style.display = isOpen ? 'none' : 'block';
+  arrow.textContent = isOpen ? '▸' : '▾';
+  if (!isOpen) loadMatches();
+}
+
+async function loadMatches() {
+  const status = document.getElementById('matches-status');
+  const tienenDiv = document.getElementById('matches-tienen');
+  const buscanDiv = document.getElementById('matches-buscan');
+  try {
+    const res = await fetch('/api/matches/wanted/' + participantId);
+    const data = await res.json();
+    status.style.display = 'none';
+
+    const tienen = data.tienen_lo_que_busco || [];
+    const buscan = data.buscan_lo_que_tengo || [];
+
+    if (tienen.length === 0 && buscan.length === 0) {
+      tienenDiv.innerHTML = '<p class="text-muted">Sin coincidencias todavía. Marcá figuritas como "Tengo" y "Quiero" para encontrar intercambios.</p>';
+      return;
+    }
+
+    if (tienen.length > 0) {
+      let html = '<h4 style="color:var(--verde);margin:12px 0 6px;">✅ Tienen lo que busco</h4>';
+      tienen.forEach(m => {
+        html += '<div style="border-bottom:1px solid var(--gris-border);padding:10px 0;">' +
+          '<strong>' + m.persona.responsable + '</strong>' +
+          '<span class="text-muted"> — ' + m.persona.alumno + ' (' + m.persona.salita + ')</span>' +
+          '<div style="margin-top:6px;">' +
+            m.figuritas.map(f =>
+              '<span class="match-num">' + f.numero + ' (ellos: ' + f.cantidad_b + ')</span>'
+            ).join(' ') +
+          '</div>' +
+        '</div>';
+      });
+      tienenDiv.innerHTML = html;
+    } else {
+      tienenDiv.innerHTML = '';
+    }
+
+    if (buscan.length > 0) {
+      let html = '<h4 style="color:var(--celeste);margin:12px 0 6px;">🔄 Buscan lo que tengo</h4>';
+      buscan.forEach(m => {
+        html += '<div style="border-bottom:1px solid var(--gris-border);padding:10px 0;">' +
+          '<strong>' + m.persona.responsable + '</strong>' +
+          '<span class="text-muted"> — ' + m.persona.alumno + ' (' + m.persona.salita + ')</span>' +
+          '<div style="margin-top:6px;">' +
+            m.figuritas.map(f =>
+              '<span class="match-num">' + f.numero + ' (yo tengo: ' + f.cantidad_a + ')</span>'
+            ).join(' ') +
+          '</div>' +
+        '</div>';
+      });
+      buscanDiv.innerHTML = html;
+    } else {
+      buscanDiv.innerHTML = '';
+    }
+  } catch {
+    status.textContent = 'Error al cargar coincidencias';
   }
 }
 

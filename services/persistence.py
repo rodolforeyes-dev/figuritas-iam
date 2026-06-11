@@ -36,6 +36,7 @@ def create_participant(responsable: str, telefono: str, alumno: str, salita: str
         "alumno": alumno,
         "salita": salita,
         "figuritas_repetidas": {},
+        "figuritas_que_quiero": {},
         "fecha_actualizacion": datetime.now().isoformat(timespec="seconds"),
     }
     data[pid] = participant

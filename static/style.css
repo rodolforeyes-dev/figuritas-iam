@@ -321,8 +321,35 @@ label {
   font-size: 1.2rem;
 }
 
-.sticker-grid {
-  display: grid;
+/* ─── Mode Toggle ─────────────────────────── */
+
+.mode-toggle {
+  display: flex;
+  gap: 0;
+  margin-bottom: 12px;
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 2px solid var(--celeste);
+}
+
+.mode-btn {
+  flex: 1;
+  padding: 10px;
+  font-size: 1rem;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  background: var(--blanco);
+  color: var(--celeste);
+  transition: all 0.2s;
+}
+
+.mode-btn.mode-active {
+  background: var(--celeste);
+  color: var(--blanco);
+}
+
+/* ─── Sticker Grid ────────────────────────── */
   grid-template-columns: repeat(5, 1fr);
   gap: 8px;
   margin-bottom: 16px;
@@ -339,6 +366,18 @@ label {
   position: relative;
   -webkit-tap-highlight-color: transparent;
   user-select: none;
+}
+
+.wants-sticker {
+  background: #E3F2FD;
+  border-color: #64B5F6;
+  box-shadow: 0 0 0 2px rgba(100, 181, 246, 0.3);
+}
+
+.wants-sticker .sticker-qty {
+  color: #1565C0;
+  font-weight: 700;
+  font-size: 0.85rem;
 }
 
 .sticker-cell:active {

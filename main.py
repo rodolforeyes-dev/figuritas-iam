@@ -14,7 +14,7 @@ from services.persistence import (
     lookup_participants,
 )
 from services.search import search_sticker, search_sticker_detail
-from services.matches import find_matches, find_matches_for_participant
+from services.matches import find_matches, find_matches_for_participant, find_wanted_matches
 from services.stats import get_stats
 from services.metrics import get_metrics
 
@@ -124,6 +124,13 @@ async def api_update_stickers(pid: str, data: StickersUpdate):
         raise HTTPException(404, "No encontrado")
     return p
 
+@app.post("/api/participants/{pid}/wanted")
+async def api_update_wanted(pid: str, data: StickersUpdate):
+    p = update_participant(pid, figuritas_que_quiero=data.figuritas_repetidas)
+    if not p:
+        raise HTTPException(404, "No encontrado")
+    return p
+
 
 @app.post("/api/participants/lookup")
 async def api_lookup(query: str = Form(...)):
@@ -148,6 +155,10 @@ async def api_matches():
 @app.get("/api/matches/{pid}")
 async def api_matches_for_participant(pid: str):
     return find_matches_for_participant(pid)
+
+@app.get("/api/matches/wanted/{pid}")
+async def api_wanted_matches(pid: str):
+    return find_wanted_matches(pid)
 
 
 @app.get("/api/metrics")
