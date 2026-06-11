@@ -68,3 +68,10 @@ def lookup_participants(query: str) -> list[dict]:
         if q in p["responsable"].lower() or q in p["alumno"].lower():
             results.append(p)
     return results
+
+def export_all() -> dict:
+    return _load_all()
+
+def import_all(data: dict) -> int:
+    _save_all(data)
+    return len(data)

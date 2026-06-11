@@ -12,6 +12,8 @@ from services.persistence import (
     get_participant,
     get_all_participants,
     lookup_participants,
+    export_all,
+    import_all,
 )
 from services.search import search_sticker, search_sticker_detail
 from services.matches import find_matches, find_matches_for_participant, find_wanted_matches
@@ -164,6 +166,15 @@ async def api_wanted_matches(pid: str):
 @app.get("/api/metrics")
 async def api_metrics():
     return get_metrics()
+
+@app.get("/api/export")
+async def api_export():
+    return export_all()
+
+@app.post("/api/import")
+async def api_import(data: dict):
+    count = import_all(data)
+    return {"importados": count}
 
 @app.get("/api/dashboard")
 async def api_dashboard():
