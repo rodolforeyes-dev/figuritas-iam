@@ -1,0 +1,55 @@
+{
+  "0a8695dc": {
+    "id": "0a8695dc",
+    "responsable": "Betiana Mega",
+    "telefono": "2226474883",
+    "alumno": "Emilia Helfrich",
+    "salita": "Sala Blanca",
+    "figuritas_repetidas": {},
+    "figuritas_que_quiero": {},
+    "fecha_actualizacion": "2026-06-11T19:03:56"
+  },
+  "1e518573": {
+    "id": "1e518573",
+    "responsable": "Lorena",
+    "telefono": "2271433012",
+    "alumno": "Alfonsina",
+    "salita": "Sala Blanca",
+    "figuritas_repetidas": {},
+    "figuritas_que_quiero": {},
+    "fecha_actualizacion": "2026-06-11T19:03:56"
+  },
+  "7a201171": {
+    "id": "7a201171",
+    "responsable": "Betiana Mega",
+    "telefono": "2226474883",
+    "alumno": "Emilia Helfrich",
+    "salita": "Sala Blanca",
+    "figuritas_repetidas": {
+      "1": 1,
+      "204": 1
+    },
+    "figuritas_que_quiero": {},
+    "fecha_actualizacion": "2026-06-11T19:05:02"
+  },
+  "bb6b54a2": {
+    "id": "bb6b54a2",
+    "responsable": "Mama",
+    "telefono": "2226457659",
+    "alumno": "Malvina meneses",
+    "salita": "Sala Blanca",
+    "figuritas_repetidas": {},
+    "figuritas_que_quiero": {},
+    "fecha_actualizacion": "2026-06-11T19:04:29"
+  },
+  "e2da2866": {
+    "id": "e2da2866",
+    "responsable": "Giuliana",
+    "telefono": "2226457659",
+    "alumno": "Malvina meneses",
+    "salita": "Sala Blanca",
+    "figuritas_repetidas": {},
+    "figuritas_que_quiero": {},
+    "fecha_actualizacion": "2026-06-11T19:05:27"
+  }
+}
