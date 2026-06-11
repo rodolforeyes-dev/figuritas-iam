@@ -44,7 +44,7 @@ const cells = grid.querySelectorAll('.sticker-cell');
 let saveTimeout = null;
 
 let figuritasTengo = {{ participant.figuritas_repetidas | tojson | safe }};
-let figuritasQuiero = {{ participant.figuritas_que_quiero | tojson | safe }};
+let figuritasQuiero = {{ (participant.figuritas_que_quiero or {}) | tojson | safe }};
 let currentMode = 'tengo';
 
 function getCurrentData() {

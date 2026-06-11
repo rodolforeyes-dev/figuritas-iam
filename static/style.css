@@ -349,7 +349,8 @@ label {
   color: var(--blanco);
 }
 
-/* ─── Sticker Grid ────────────────────────── */
+.sticker-grid {
+  display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 8px;
   margin-bottom: 16px;
@@ -430,7 +431,8 @@ label {
   padding: 0;
 }
 
-.sticker-cell.has-sticker .sticker-dec {
+.sticker-cell.has-sticker .sticker-dec,
+.sticker-cell.wants-sticker .sticker-dec {
   display: flex;
 }
 
