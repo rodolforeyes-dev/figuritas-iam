@@ -157,3 +157,10 @@ async def api_metrics():
 @app.get("/api/dashboard")
 async def api_dashboard():
     return get_stats()
+
+
+if __name__ == "__main__":
+    import os
+    import uvicorn
+    port = int(os.getenv("PORT", 8000))
+    uvicorn.run("main:app", host="0.0.0.0", port=port)
